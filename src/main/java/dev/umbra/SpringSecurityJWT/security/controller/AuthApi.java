@@ -37,23 +37,21 @@ public class AuthApi {
     
     @PostMapping
     public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request) {
-        
         try {
             Authentication authentication = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(), request.getPassword())
             );
-            
+
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAcessToken(user);
             AuthResponse response = new AuthResponse(user.getEmail(), accessToken);
-            
+
             return ResponseEntity.ok().body(response);
-            
-        } catch(BadCredentialsException ex) {
+
+        } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        
     }
     
 }
